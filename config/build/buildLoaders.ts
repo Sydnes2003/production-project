@@ -4,9 +4,19 @@ import { BuildOptions } from "./types/config";
 
 export function buildLoaders({ isDev }: BuildOptions): RuleSetRule[] {
 
+    const svgLoader: RuleSetRule = {
+        test: /\.svg$/i,
+        use: ['@svgr/webpack'],
+    };
+
+    const fileLoader: RuleSetRule = {
+        test: /\.(png|jpe?g|gif)$/i,
+        use: ['file-loader'],
+    };
+
     const typescriptLoader: RuleSetRule = {
-        test: /\.tsx?$/,
-        use: 'ts-loader',
+        test: /\.tsx?$/i,
+        use: ['ts-loader'],
         exclude: /node_modules/,
     };
 
@@ -35,6 +45,8 @@ export function buildLoaders({ isDev }: BuildOptions): RuleSetRule[] {
     };
 
     return [
+        svgLoader,
+        fileLoader,
         typescriptLoader,
         scssLoader,
     ];
