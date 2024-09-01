@@ -1,9 +1,8 @@
-import { RuleSetRule } from "webpack";
-import MiniCssExtractPlugin from "mini-css-extract-plugin";
-import { BuildOptions } from "./types/config";
+import { RuleSetRule } from 'webpack';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import { BuildOptions } from './types/config';
 
 export function buildLoaders({ isDev }: BuildOptions): RuleSetRule[] {
-
     const svgLoader: RuleSetRule = {
         test: /\.svg$/i,
         use: ['@svgr/webpack'],
@@ -12,6 +11,26 @@ export function buildLoaders({ isDev }: BuildOptions): RuleSetRule[] {
     const fileLoader: RuleSetRule = {
         test: /\.(png|jpe?g|gif)$/i,
         use: ['file-loader'],
+    };
+
+    const babelLoader: RuleSetRule = {
+        test: /\.(jsx?|tsx?)$/,
+        exclude: /node_modules/,
+        use: {
+            loader: 'babel-loader',
+            options: {
+                presets: ['@babel/preset-env'],
+                // plugins: [
+                //     [
+                //         "i18next-extract",
+                //         {
+                //             locales: ["en", "ru"],
+                //             keyAsDefaultValue: true,
+                //         }
+                //     ],
+                // ]
+            },
+        },
     };
 
     const typescriptLoader: RuleSetRule = {
@@ -24,22 +43,22 @@ export function buildLoaders({ isDev }: BuildOptions): RuleSetRule[] {
         test: /\.s[ac]ss$/i,
         use: [
             {
-                loader: isDev ? "style-loader" : MiniCssExtractPlugin.loader
+                loader: isDev ? 'style-loader' : MiniCssExtractPlugin.loader,
             },
             {
-                loader: "css-loader",
+                loader: 'css-loader',
                 options: {
                     modules: {
                         namedExport: false,
-                        exportLocalsConvention: "as-is",
+                        exportLocalsConvention: 'as-is',
                         auto: /\.module\.s?css$/i,
-                        localIdentName: isDev ? "[path][name]__[local]" : "[hash:base64:8]",
+                        localIdentName: isDev ? '[path][name]__[local]' : '[hash:base64:8]',
                     },
 
                 },
             },
             {
-                loader: "sass-loader",
+                loader: 'sass-loader',
             },
         ],
     };
@@ -47,6 +66,7 @@ export function buildLoaders({ isDev }: BuildOptions): RuleSetRule[] {
     return [
         svgLoader,
         fileLoader,
+        babelLoader,
         typescriptLoader,
         scssLoader,
     ];
